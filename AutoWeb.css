@@ -1,0 +1,14 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 300vh; /* 3 times the viewport height to allow scrolling */
+    background: 
+        url('AutoWeb1.jpg') top center no-repeat,
+        url('image2.jpg') center center no-repeat,
+        url('image3.jpg') bottom center no-repeat;
+    background-size: cover;
+}

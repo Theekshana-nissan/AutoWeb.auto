@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Vehicle Expert</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-image: url('AutoWeb3.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-color: #f7f7f8; /* Fallback color */
+        }
+        
+        /* Semi-transparent overlay for better readability */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(247, 247, 248, 0.85);
+            z-index: -1;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+        
+        .user-message {
+            margin-left: auto;
+            background-color: rgba(240, 244, 255, 0.9);
+            border-radius: 18px 18px 0 18px;
+            padding: 12px 16px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .ai-message {
+            margin-right: auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 18px 18px 18px 0;
+            padding: 12px 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .input-container {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #d9d9e3;
+            border-radius: 16px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .vehicle-icon {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        /* Background pattern overlay */
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(247, 247, 248, 0.7), rgba(247, 247, 248, 0.7)),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="10" y="15" font-family="Arial" font-size="8" fill="%23d9d9e3">What\'s the towing capacity?</text><text x="10" y="30" font-family="Arial" font-size="8" fill="%23d9d9e3">0-60 time?</text><text x="10" y="45" font-family="Arial" font-size="8" fill="%23d9d9e3">MPG rating?</text><text x="10" y="60" font-family="Arial" font-size="8" fill="%23d9d9e3">Maintenance schedule?</text><text x="10" y="75" font-family="Arial" font-size="8" fill="%23d9d9e3">EV range?</text><text x="10" y="90" font-family="Arial" font-size="8" fill="%23d9d9e3">Safety ratings?</text></svg>');
+            background-size: 300px 300px;
+            z-index: -2;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="message ai-message">
+            <span class="vehicle-icon">🚗</span> <strong>Vehicle Expert Ready!</strong><br>
+            Ask me anything about cars, trucks, motorcycles, or other vehicles. Try these examples:
+            <ul>
+                <li>"Toyota Camry fuel economy"</li>
+                <li>"Best family SUVs 2023"</li>
+                <li>"Ford F-150 towing capacity"</li>
+                <li>"Tesla charging time"</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="input-container">
+        <input type="text" id="userInput" placeholder="Ask any vehicle question..." 
+               onkeypress="if(event.keyCode==13) sendMessage()" autofocus>
+    </div>
+
+    <script>
+        // Vehicle knowledge database - now with more answers!
+        const vehicleDB = {
+            // Car specifications
+            "toyota camry": {
+                answer: `🚗 <strong>Toyota Camry 2023 Specifications</strong>
+                <table>
+                    <tr><th>Engine</th><td>2.5L 4-cylinder (203hp) or 3.5L V6 (301hp)</td></tr>
+                    <tr><th>MPG</th><td>28 city / 39 highway (4-cyl), 22 city / 33 highway (V6)</td></tr>
+                    <tr><th>Hybrid MPG</th><td>51 city / 53 highway (LE Hybrid)</td></tr>
+                    <tr><th>Price</th><td>$26,320 - $35,485</td></tr>
+                    <tr><th>Safety</th><td>IIHS Top Safety Pick+ (all trims)</td></tr>
+                </table>`,
+                followup: ["How does the Camry compare to Honda Accord?", "What's the maintenance schedule for a Camry?"]
+            },
+            
+            "honda accord": {
+                answer: `🚙 <strong>Honda Accord 2023 Specifications</strong>
+                <table>
+                    <tr><th>Engine</th><td>1.5L Turbo (192hp) or 2.0L Turbo (252hp)</td></tr>
+                    <tr><th>MPG</th><td>29 city / 37 highway (1.5T), 22 city / 32 highway (2.0T)</td></tr>
+                    <tr><th>Hybrid MPG</th><td>48 city / 48 highway</td></tr>
+                    <tr><th>Price</th><td>$27,295 - $38,540</td></tr>
+                    <tr><th>Notable</th><td>2023 complete redesign with new infotainment</td></tr>
+                </table>`,
+                followup: ["Honda Accord vs Toyota Camry", "How reliable is the Accord?"]
+            },
+            
+            "tesla model 3": {
+                answer: `⚡ <strong>Tesla Model 3 2023 Specifications</strong>
+                <table>
+                    <tr><th>Range</th><td>272-358 miles depending on version</td></tr>
+                    <tr><th>0-60 mph</th><td>3.1-5.8 seconds</td></tr>
+                    <tr><th>Charging</th><td>170 miles in 15 mins (Supercharger V3)</td></tr>
+                    <tr><th>Price</th><td>$40,240 - $54,490</td></tr>
+                    <tr><th>Warranty</th><td>8 years/120k miles (battery)</td></tr>
+                </table>`,
+                followup: ["How long do Tesla batteries last?", "What's the cost to charge at home?"]
+            },
+            
+            // Truck specifications
+            "ford f-150": {
+                answer: `🛻 <strong>Ford F-150 2023 Specifications</strong>
+                <table>
+                    <tr><th>Engines</th><td>3.3L V6, 2.7L/3.5L EcoBoost, 5.0L V8, PowerBoost hybrid</td></tr>
+                    <tr><th>MPG</th><td>20 city / 24 highway (2.7L EcoBoost)</td></tr>
+                    <tr><th>Max Tow</th><td>14,000 lbs (with Max Trailer Tow)</td></tr>
+                    <tr><th>Payload</th><td>3,325 lbs max</td></tr>
+                    <tr><th>Price</th><td>$34,585 - $85,870</td></tr>
+                </table>`,
+                followup: ["F-150 vs Chevy Silverado", "What's the F-150 Lightning range?"]
+            },
+            
+            "chevy silverado": {
+                answer: `🚛 <strong>Chevrolet Silverado 1500 2023 Specifications</strong>
+                <table>
+                    <tr><th>Engines</th><td>2.7L Turbo, 5.3L/6.2L V8, 3.0L Duramax diesel</td></tr>
+                    <tr><th>MPG</th><td>20 city / 23 highway (5.3L V8)</td></tr>
+                    <tr><th>Max Tow</th><td>13,300 lbs (with Max Trailering)</td></tr>
+                    <tr><th>Payload</th><td>2,280 lbs max</td></tr>
+                    <tr><th>Price</th><td>$36,800 - $73,400</td></tr>
+                </table>`,
+                followup: ["Silverado vs Ram 1500", "Is the diesel engine worth it?"]
+            },
+            
+            // SUVs
+            "toyota rav4": {
+                answer: `🚙 <strong>Toyota RAV4 2023 Specifications</strong>
+                <table>
+                    <tr><th>Engine</th><td>2.5L 4-cylinder (203hp) or Hybrid (219hp)</td></tr>
+                    <tr><th>MPG</th><td>27 city / 35 highway (gas), 41 city / 38 highway (hybrid)</td></tr>
+                    <tr><th>Cargo</th><td>37.6 cu ft (69.8 with seats down)</td></tr>
+                    <tr><th>Price</th><td>$28,275 - $39,955</td></tr>
+                    <tr><th>Awards</th><td>Best Compact SUV (Kelley Blue Book)</td></tr>
+                </table>`,
+                followup: ["RAV4 vs Honda CR-V", "How reliable is the RAV4?"]
+            },
+            
+            // Motorcycles
+            "harley davidson": {
+                answer: `🏍️ <strong>Harley-Davidson 2023 Lineup Highlights</strong>
+                <table>
+                    <tr><th>Sportster S</th><td>121hp, 94 ft-lbs, 502 lbs ($15,999)</td></tr>
+                    <tr><th>Street Glide</th><td>114hp, 146 ft-lbs, 842 lbs ($23,999)</td></tr>
+                    <tr><th>Road King</th><td>92hp, 119 ft-lbs, 820 lbs ($20,999)</td></tr>
+                    <tr><th>LiveWire</th><td>105hp (electric), 146 mi range ($22,799)</td></tr>
+                </table>`,
+                followup: ["Best beginner Harley?", "Harley maintenance costs"]
+            },
+            
+            // Comparisons
+            "camry vs accord": {
+                answer: `📊 <strong>Toyota Camry vs Honda Accord (2023)</strong>
+                <table>
+                    <tr><th></th><th>Camry</th><th>Accord</th></tr>
+                    <tr><th>Base Price</th><td>$26,320</td><td>$27,295</td></tr>
+                    <tr><th>MPG (base)</th><td>28/39</td><td>29/37</td></tr>
+                    <tr><th>HP (top)</th><td>301 (V6)</td><td>252 (2.0T)</td></tr>
+                    <tr><th>Hybrid MPG</th><td>51/53</td><td>48/48</td></tr>
+                    <tr><th>Trunk Space</th><td>15.1 cu ft</td><td>16.7 cu ft</td></tr>
+                </table>
+                <strong>Camry advantages:</strong> More powerful V6 option, slightly better hybrid MPG<br>
+                <strong>Accord advantages:</strong> More tech features, better handling, more cargo space`,
+                followup: ["Which is more reliable?", "Which has better resale value?"]
+            },
+            
+            // Maintenance questions
+            "oil change interval": {
+                answer: `🔧 <strong>Typical Oil Change Intervals</strong>
+                <table>
+                    <tr><th>Vehicle Type</th><th>Conventional Oil</th><th>Full Synthetic</th></tr>
+                    <tr><td>Regular Cars</td><td>3,000-5,000 miles</td><td>7,500-15,000 miles</td></tr>
+                    <tr><td>Performance Cars</td><td>Not recommended</td><td>5,000-7,500 miles</td></tr>
+                    <tr><td>Trucks/SUVs</td><td>3,000-5,000 miles</td><td>5,000-10,000 miles</td></tr>
+                    <tr><td>Motorcycles</td><td>2,000-4,000 miles</td><td>5,000-8,000 miles</td></tr>
+                </table>
+                <em>Always check your owner's manual for manufacturer recommendations</em>`,
+                followup: ["What's the best oil for my car?", "How to check oil level?"]
+            }
+        };
+
+        // Send message function
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const question = input.value.trim().toLowerCase();
+            input.value = '';
+            
+            if (!question) return;
+            
+            // Add user question to chat
+            addMessage(question, 'user');
+            
+            // Find best matching answer
+            let answer = "I don't have information about that specific vehicle. Try asking about:";
+            let followup = [];
+            
+            // Check for exact matches first
+            if (vehicleDB[question]) {
+                answer = vehicleDB[question].answer;
+                followup = vehicleDB[question].followup;
+            } else {
+                // Check for partial matches
+                for (const key in vehicleDB) {
+                    if (question.includes(key)) {
+                        answer = vehicleDB[key].answer;
+                        followup = vehicleDB[key].followup;
+                        break;
+                    }
+                }
+                
+                // If no match found, show general help
+                if (answer.startsWith("I don't")) {
+                    answer += "<ul>";
+                    for (const key in vehicleDB) {
+                        answer += `<li>${key}</li>`;
+                    }
+                    answer += "</ul>";
+                }
+            }
+            
+            // Add AI response after a short delay
+            setTimeout(() => {
+                addMessage(answer, 'ai');
+                
+                // Add followup suggestions if available
+                if (followup.length > 0) {
+                    setTimeout(() => {
+                        let followupHTML = "<strong>You might also ask:</strong><br>";
+                        followup.forEach(q => {
+                            followupHTML += `<div style="margin: 5px 0; color: #0066cc; cursor: pointer;" 
+                                            onclick="document.getElementById('userInput').value='${q}'; document.getElementById('userInput').focus()">
+                                            ${q}</div>`;
+                        });
+                        addMessage(followupHTML, 'ai');
+                    }, 500);
+                }
+            }, 800);
+        }
+        
+        // Add message to chat
+        function addMessage(text, sender) {
+            const chat = document.getElementById('chatContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${sender}-message`;
+            msg.innerHTML = text;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>

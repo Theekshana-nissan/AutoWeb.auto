@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-image: url('AutoWeb5.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 0;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            font-size: 2rem;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            align-items: center;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        /* Scrollbar styling */
+        .button-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .button-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .button-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        
+        .button-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        
+        .brand-button {
+            padding: 18px 0;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, 
+                #ff0000, #ff8000, #ffff00, #80ff00, 
+                #00ff00, #00ff80, #00ffff, #0080ff, 
+                #0000ff, #8000ff, #ff00ff, #ff0080, #ff0000);
+            background-size: 1800% 1800%;
+            z-index: 1;
+        }
+        
+        .brand-button::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            bottom: 1px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            z-index: -1;
+            transition: all 0.3s ease;
+        }
+        
+        .brand-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        .brand-button:hover::before {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .brand-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .brand-button {
+                font-size: 14px;
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Choose Your DREAM Brand</h1>
+        <div class="button-container" id="buttonContainer"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const vehicleBrands = {
+                "Toyota": "toyota.html",
+                "Volkswagen": "volkswagen.html",
+                "Ford": "ford.html",
+                "Honda": "honda.html",
+                "Chevrolet": "chevrolet.html",
+                "Nissan": "nissan.html",
+                "BMW": "bmw.html",
+                "Mercedes-Benz": "mercedes.html",
+                "Audi": "audi.html",
+                "Hyundai": "hyundai.html",
+                "Kia": "kia.html",
+                "Volvo": "volvo.html",
+                "Subaru": "subaru.html",
+                "Mazda": "mazda.html",
+                "Lexus": "lexus.html",
+                "Tesla": "tesla.html",
+                "Porsche": "porsche.html",
+                "Jeep": "jeep.html",
+                "Fiat": "fiat.html",
+                "Land Rover": "landrover.html",
+                "Jaguar": "jaguar.html",
+                "Mitsubishi": "mitsubishi.html",
+                "Mini": "mini.html",
+                "Buick": "buick.html",
+                "Cadillac": "cadillac.html",
+                "Chrysler": "chrysler.html",
+                "Dodge": "dodge.html",
+                "Ram": "ram.html",
+                "GMC": "gmc.html",
+                "Acura": "acura.html",
+                "Infiniti": "infiniti.html",
+                "Lincoln": "lincoln.html",
+                "Alfa Romeo": "alfaromeo.html",
+                "Ferrari": "ferrari.html",
+                "Lamborghini": "lamborghini.html",
+                "Maserati": "maserati.html",
+                "Bentley": "bentley.html",
+                "Rolls-Royce": "rollsroyce.html",
+                "Aston Martin": "astonmartin.html",
+                "McLaren": "mclaren.html",
+                "Bugatti": "bugatti.html",
+                "Lotus": "lotus.html",
+                "Genesis": "genesis.html",
+                "Smart": "smart.html",
+                "Suzuki": "suzuki.html",
+                "Isuzu": "isuzu.html",
+                "Daihatsu": "daihatsu.html",
+                "Hino": "hino.html",
+                "Scion": "scion.html",
+                "Saab": "saab.html",
+                "Pontiac": "pontiac.html",
+                "Saturn": "saturn.html",
+                "Oldsmobile": "oldsmobile.html",
+                "Plymouth": "plymouth.html",
+                "HUMMER": "hummer.html",
+                "Maybach": "maybach.html",
+                "Tata": "tata.html",
+                "Mahindra": "mahindra.html",
+                "BYD": "byd.html",
+                "Geely": "geely.html",
+                "Great Wall": "greatwall.html",
+                "Chery": "chery.html",
+                "BAIC": "baic.html",
+                "Changan": "changan.html",
+                "Dongfeng": "dongfeng.html",
+                "FAW": "faw.html",
+                "JAC": "jac.html",
+                "SAIC": "saic.html",
+                "Proton": "proton.html",
+                "Perodua": "perodua.html"
+            };
+            const buttonContainer = document.getElementById('buttonContainer');
+            
+            // Create buttons for each brand
+            Object.entries(vehicleBrands).forEach(([brand, link], index) => {
+                const button = document.createElement('button');
+                button.className = 'brand-button';
+                button.textContent = brand;
+                
+                // Set unique animation for each button
+                const duration = 10 + Math.random() * 10;
+                const delay = index * 0.1;
+                button.style.animation = `rainbow ${duration}s linear infinite ${delay}s`;
+                
+                // Add click effect
+                button.addEventListener('click', function() {
+                    // Visual feedback
+                    button.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        button.style.transform = '';
+                        // Navigate to brand-specific page
+                        window.location.href = link;
+                    }, 200);
+                });
+                
+                buttonContainer.appendChild(button);
+            });
+        });
+    </script>
+</body>
+</html>

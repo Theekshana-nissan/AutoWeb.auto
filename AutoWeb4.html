@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoWeb Bot</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-image: url('Bot.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.85);
+            z-index: -1;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(10, 25, 47, 0.9);
+            color: white;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            max-width: 950px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .message {
+            margin-bottom: 25px;
+            max-width: 90%;
+            line-height: 1.7;
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            margin-left: auto;
+            background: linear-gradient(135deg, #0a192f, #1a3658);
+            color: white;
+            border-radius: 20px 20px 0 20px;
+            padding: 15px 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+            font-size: 16px;
+        }
+        
+        .ai-message {
+            margin-right: auto;
+            background-color: rgba(255, 255, 255, 0.96);
+            border-radius: 20px 20px 20px 0;
+            padding: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #0a192f;
+            font-size: 15.5px;
+        }
+        
+        .input-container {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.96);
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 -3px 15px rgba(0,0,0,0.1);
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            max-width: 850px;
+            padding: 16px 25px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 16.5px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #0a192f;
+            box-shadow: 0 0 0 4px rgba(10, 25, 47, 0.15);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 18px 0;
+            background-color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        th, td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #0a192f;
+        }
+        
+        .vehicle-icon {
+            font-size: 26px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .typing-dot {
+            width: 9px;
+            height: 9px;
+            background-color: #666;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+        
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+        
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+        
+        .suggestion-chip {
+            background-color: #e6f0ff;
+            color: #0a192f;
+            border-radius: 22px;
+            padding: 10px 18px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s;
+            border: 1px solid #cce0ff;
+            font-weight: 500;
+        }
+        
+        .suggestion-chip:hover {
+            background-color: #d0e2ff;
+            transform: translateY(-3px);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        
+        .disclaimer {
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            padding: 12px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-top: 1px solid #eee;
+        }
+        
+        .rating {
+            color: #ffb400;
+            font-weight: bold;
+        }
+        
+        .highlight {
+            background-color: #fffde7;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    
+    <div class="header">
+        <h1 style="font-family: Georgia, 'Times New Roman', Times, serif;">🚗 AutoWeb Bot 🌍</h1>
+        <p>Ask anything about any vehicle - from performance specs to "best in class" comparisons</p>
+    </div>
+    
+    <div class="chat-container" id="chatContainer">
+        <div class="message ai-message">
+            <p><span class="vehicle-icon">🚘</span> <strong>Welcome to the world's most comprehensive vehicle knowledge base!</strong></p>
+            <p>I can provide detailed answers about:</p>
+            <ul>
+                <li>🏆 <strong>"Best in class"</strong> vehicles (luxury, performance, value, etc.)</li>
+                <li>📊 <strong>Technical specifications</strong> for any make/model</li>
+                <li>⚙️ <strong>Engineering details</strong> about how vehicles work</li>
+                <li>📈 <strong>Performance comparisons</strong> between models</li>
+                <li>💰 <strong>Pricing & value</strong> analysis</li>
+                <li>🛠️ <strong>Maintenance & reliability</strong> information</li>
+            </ul>
+            
+            <div class="suggestions">
+                <div class="suggestion-chip" onclick="askQuestion('What is considered the best car in the world right now?')">Best car in the world</div>
+                <div class="suggestion-chip" onclick="askQuestion('Most reliable SUV under $40,000')">Reliable SUV under $40K</div>
+                <div class="suggestion-chip" onclick="askQuestion('Fastest production motorcycle 2023')">Fastest motorcycle</div>
+                <div class="suggestion-chip" onclick="askQuestion('How does a turbocharger work?')">Turbocharger explained</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-container">
+        <input type="text" id="userInput" placeholder="Ask any vehicle question (e.g. 'Best luxury sedan 2023' or 'How many HP in a Ferrari SF90')" 
+               autofocus onkeypress="if(event.keyCode==13) askQuestion(this.value)">
+    </div>
+    
+    <div class="disclaimer">
+        Information is for reference only. Vehicle specifications may vary by region and model year.
+    </div>
+
+    <script>
+        // Comprehensive vehicle knowledge base with "best in class" categories
+        const vehicleDB = {
+            // Best in world categories
+            "best car in the world": {
+                answer: `🏆 <strong>Best Cars in the World (2023)</strong>
+                
+                <p>There are different ways to define "best" - here are top contenders in key categories:</p>
+                
+                <table>
+                    <tr><th>Category</th><th>Vehicle</th><th>Key Attributes</th><th>Rating</th></tr>
+                    <tr><td><strong>Ultimate Performance</strong></td><td>Bugatti Chiron Super Sport 300+</td><td>1,600 HP, 304 mph top speed</td><td class="rating">10/10</td></tr>
+                    <tr><td><strong>Luxury</strong></td><td>Rolls-Royce Phantom</td><td>Ultimate comfort & craftsmanship</td><td class="rating">9.8/10</td></tr>
+                    <tr><td><strong>Technology</strong></td><td>Tesla Model S Plaid</td><td>1,020 HP, 396mi range, 0-60 in 1.99s</td><td class="rating">9.7/10</td></tr>
+                    <tr><td><strong>Value</strong></td><td>Toyota Corolla Hybrid</td><td>53 MPG, reliability, $23K starting</td><td class="rating">9.5/10</td></tr>
+                    <tr><td><strong>Supercar</strong></td><td>McLaren Artura</td><td>671 HP hybrid, perfect handling</td><td class="rating">9.9/10</td></tr>
+                    <tr><td><strong>Hypercar</strong></td><td>Koenigsegg Jesko Absolut</td><td>1,600 HP, theoretical 330+ mph</td><td class="rating">10/10</td></tr>
+                </table>
+                
+                <p><span class="highlight">Note:</span> "Best" depends on priorities - performance, luxury, technology, or value.</p>`,
+                followup: [
+                    "Most expensive car in the world",
+                    "Best electric car 2023",
+                    "Fastest accelerating production car"
+                ]
+            },
+            
+            // Best by category
+            "best luxury sedan": {
+                answer: `💎 <strong>Best Luxury Sedans (2023)</strong>
+                
+                <table>
+                    <tr><th>Rank</th><th>Model</th><th>Starting Price</th><th>Key Features</th></tr>
+                    <tr><td>1</td><td>Mercedes-Benz S-Class</td><td>$114,500</td><td>Most advanced tech, sublime comfort</td></tr>
+                    <tr><td>2</td><td>BMW 7 Series</td><td>$93,300</td><td>Sportier handling, new electric version</td></tr>
+                    <tr><td>3</td><td>Porsche Panamera</td><td>$89,900</td><td>Best driving dynamics, performance</td></tr>
+                    <tr><td>4</td><td>Audi A8</td><td>$86,500</td><td>Understated elegance, superb Quattro AWD</td></tr>
+                    <tr><td>5</td><td>Lexus LS</td><td>$78,435</td><td>Best reliability, hybrid option</td></tr>
+                </table>
+                
+                <p><strong>Honorable Mentions:</strong> Genesis G90, Tesla Model S, Maserati Quattroporte</p>`,
+                followup: [
+                    "S-Class vs 7 Series comparison",
+                    "Best luxury sedan under $80K",
+                    "Most reliable luxury sedan"
+                ]
+            },
+            
+            // Best SUVs
+            "best suv": {
+                answer: `🚙 <strong>Best SUVs by Category (2023)</strong>
+                
+                <table>
+                    <tr><th>Category</th><th>Winner</th><th>Alternatives</th></tr>
+                    <tr><td><strong>Luxury SUV</strong></td><td>Range Rover</td><td>Mercedes GLS, BMW X7</td></tr>
+                    <tr><td><strong>Performance SUV</strong></td><td>Lamborghini Urus Performante</td><td>Porsche Cayenne Turbo GT, Audi RS Q8</td></tr>
+                    <tr><td><strong>Family SUV</strong></td><td>Kia Telluride</td><td>Hyundai Palisade, Toyota Highlander</td></tr>
+                    <tr><td><strong>Off-Road</strong></td><td>Jeep Wrangler Rubicon 392</td><td>Land Rover Defender, Toyota Land Cruiser</td></tr>
+                    <tr><td><strong>Electric SUV</strong></td><td>Rivian R1S</td><td>Tesla Model X, BMW iX</td></tr>
+                    <tr><td><strong>Value</strong></td><td>Honda CR-V</td><td>Mazda CX-5, Subaru Forester</td></tr>
+                </table>`,
+                followup: [
+                    "Best 3-row SUV",
+                    "Most reliable SUV 2023",
+                    "Best luxury small SUV"
+                ]
+            },
+            
+            // Best electric vehicles
+            "best electric car": {
+                answer: `⚡ <strong>Best Electric Cars (2023)</strong>
+                
+                <table>
+                    <tr><th>Category</th><th>Model</th><th>Range</th><th>0-60</th><th>Price</th></tr>
+                    <tr><td><strong>Overall</strong></td><td>Tesla Model S Plaid</td><td>396mi</td><td>1.99s</td><td>$108,490</td></tr>
+                    <tr><td><strong>Luxury</strong></td><td>Lucid Air Grand Touring</td><td>516mi</td><td>3.0s</td><td>$138,000</td></tr>
+                    <tr><td><strong>Value</strong></td><td>Hyundai Ioniq 6</td><td>361mi</td><td>5.1s</td><td>$41,600</td></tr>
+                    <tr><td><strong>Performance</strong></td><td>Porsche Taycan Turbo S</td><td>222mi</td><td>2.6s</td><td>$191,000</td></tr>
+                    <tr><td><strong>SUV</strong></td><td>Rivian R1S</td><td>316mi</td><td>3.0s</td><td>$78,000</td></tr>
+                    <tr><td><strong>Affordable</strong></td><td>Chevy Bolt EUV</td><td>247mi</td><td>6.7s</td><td>$27,800</td></tr>
+                </table>
+                
+                <p><strong>Coming Soon:</strong> Next-gen Tesla Roadster (620mi range), Fisker Ocean (250-350mi), BMW i5</p>`,
+                followup: [
+                    "Electric vs hybrid cars",
+                    "How long do EV batteries last?",
+                    "Best electric truck"
+                ]
+            },
+            
+            // Fastest vehicles
+            "fastest car": {
+                answer: `💨 <strong>Fastest Production Cars (2023)</strong>
+                
+                <table>
+                    <tr><th>Rank</th><th>Car</th><th>Top Speed</th><th>0-60</th><th>Power</th></tr>
+                    <tr><td>1</td><td>SSC Tuatara</td><td>295 mph</td><td>2.5s</td><td>1,750 HP</td></tr>
+                    <tr><td>2</td><td>Bugatti Chiron Super Sport 300+</td><td>304 mph*</td><td>2.3s</td><td>1,600 HP</td></tr>
+                    <tr><td>3</td><td>Koenigsegg Jesko Absolut</td><td>330 mph†</td><td>2.5s</td><td>1,600 HP</td></tr>
+                    <tr><td>4</td><td>Hennessey Venom F5</td><td>311 mph†</td><td>2.6s</td><td>1,817 HP</td></tr>
+                    <tr><td>5</td><td>Bugatti Veyron Super Sport</td><td>268 mph</td><td>2.4s</td><td>1,200 HP</td></tr>
+                </table>
+                
+                <p>* Electronically limited<br>
+                † Theoretical top speed (not officially verified)</p>`,
+                followup: [
+                    "Fastest accelerating car",
+                    "Fastest street legal car",
+                    "Fastest electric car"
+                ]
+            },
+            
+            // Most expensive
+            "most expensive car": {
+                answer: `💰 <strong>Most Expensive Cars in the World (2023)</strong>
+                
+                <table>
+                    <tr><th>Car</th><th>Price</th><th>Production</th><th>Special Features</th></tr>
+                    <tr><td>Rolls-Royce Boat Tail</td><td>$28M</td><td>3 units</td><td>Custom coachbuilt, champagne fridge</td></tr>
+                    <tr><td>Bugatti La Voiture Noire</td><td>$18.7M</td><td>1 unit</td><td>One-off Chiron derivative</td></tr>
+                    <tr><td>Pagani Zonda HP Barchetta</td><td>$17.5M</td><td>3 units</td><td>Open-top Zonda final edition</td></tr>
+                    <tr><td>Rolls-Royce Sweptail</td><td>$13M</td><td>1 unit</td><td>Fully bespoke commission</td></tr>
+                    <tr><td>Bugatti Centodieci</td><td>$9M</td><td>10 units</td><td>EB110 homage</td></tr>
+                </table>
+                
+                <p><strong>Upcoming:</strong> The $30M Bugatti Mistral (final W16 roadster) and $5M Lamborghini Countach LPI 800-4</p>`,
+                followup: [
+                    "Most expensive car ever sold",
+                    "Most expensive production car",
+                    "Most expensive SUV"
+                ]
+            },
+            
+            // Technology explanations
+            "turbocharger": {
+                answer: `🔧 <strong>How Turbochargers Work</strong>
+                
+                <p>A turbocharger is a forced induction device that increases an engine's efficiency and power output by forcing extra air into the combustion chamber.</p>
+                
+                <table>
+                    <tr><th>Component</th><th>Function</th></tr>
+                    <tr><td>Turbine</td><td>Uses exhaust gases to spin at up to 250,000 RPM</td></tr>
+                    <tr><td>Compressor</td><td>Draws in and compresses intake air</td></tr>
+                    <tr><td>Intercooler</td><td>Cools compressed air for denser charge</td></tr>
+                    <tr><td>Wastegate</td><td>Controls boost pressure</td></tr>
+                </table>
+                
+                <p><strong>Benefits:</strong><br>
+                - 20-40% more power from same displacement<br>
+                - Better fuel economy (when driven moderately)<br>
+                - Reduced emissions</p>
+                
+                <p><strong>Drawbacks:</strong><br>
+                - Turbo lag (delay in power delivery)<br>
+                - Increased complexity and maintenance<br>
+                - Higher engine temperatures</p>`,
+                followup: [
+                    "Turbo vs supercharger",
+                    "How to maintain a turbo engine",
+                    "Best turbocharged engines"
+                ]
+            }
+        };
+
+        function askQuestion(question) {
+            const input = document.getElementById('userInput');
+            if (typeof question !== 'string') {
+                question = input.value.trim();
+                input.value = '';
+            }
+            
+            if (!question) return;
+            
+            // Add user question
+            addMessage(question, 'user');
+            
+            // Show typing indicator
+            const typing = document.createElement('div');
+            typing.className = 'message ai-message';
+            typing.innerHTML = `<div class="typing-indicator">Researching vehicle data<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>`;
+            document.getElementById('chatContainer').appendChild(typing);
+            document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+            
+            // Process after delay
+            setTimeout(() => {
+                document.getElementById('chatContainer').removeChild(typing);
+                
+                let response = getVehicleResponse(question.toLowerCase());
+                addMessage(response.answer, 'ai');
+                
+                if (response.followup.length > 0) {
+                    setTimeout(() => {
+                        let followupHTML = `<div class="suggestions">`;
+                        response.followup.forEach(q => {
+                            followupHTML += `<div class="suggestion-chip" onclick="askQuestion('${q}')">${q}</div>`;
+                        });
+                        followupHTML += `</div>`;
+                        
+                        const followupMsg = document.createElement('div');
+                        followupMsg.className = 'message ai-message';
+                        followupMsg.innerHTML = `<p>Related questions you might ask:</p>${followupHTML}`;
+                        document.getElementById('chatContainer').appendChild(followupMsg);
+                        document.getElementById('chatContainer').scrollTop = document.getElementById('chatContainer').scrollHeight;
+                    }, 400);
+                }
+            }, 1800);
+        }
+        
+        function getVehicleResponse(question) {
+            // Check for exact matches first
+            for (const key in vehicleDB) {
+                if (question.includes(key)) {
+                    return vehicleDB[key];
+                }
+            }
+            
+            // Check for similar questions
+            const similarQuestions = {
+                "fastest": "fastest car",
+                "most expensive": "most expensive car",
+                "best luxury": "best luxury sedan",
+                "best ev": "best electric car",
+                "best suv": "best suv",
+                "how turbo": "turbocharger"
+            };
+            
+            for (const term in similarQuestions) {
+                if (question.includes(term)) {
+                    return vehicleDB[similarQuestions[term]];
+                }
+            }
+            
+            // If no match found
+            return {
+                answer: `🌐 <strong>Vehicle Knowledge Base</strong>
+                <p>I have comprehensive data about vehicles worldwide. Try asking about:</p>
+                <div class="suggestions">
+                    <div class="suggestion-chip" onclick="askQuestion('Best car in the world')">Best cars</div>
+                    <div class="suggestion-chip" onclick="askQuestion('Fastest production cars')">Fastest vehicles</div>
+                    <div class="suggestion-chip" onclick="askQuestion('How does a hybrid engine work?')">Technology</div>
+                    <div class="suggestion-chip" onclick="askQuestion('Most reliable SUVs')">Reliability</div>
+                </div>
+                <p>Or be more specific with make/model questions like: "What's the horsepower of a 2023 Corvette Z06?"</p>`,
+                followup: []
+            };
+        }
+        
+        function addMessage(text, sender) {
+            const chat = document.getElementById('chatContainer');
+            const msg = document.createElement('div');
+            msg.className = `message ${sender}-message`;
+            msg.innerHTML = text;
+            chat.appendChild(msg);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>

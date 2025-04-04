@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-image: url('Options.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options</title>
+    <style>
+        body {
+          margin: 0;
+          font-family: Arial, sans-serif;
+        }
+    
+        .sidebar {
+          height: 100vh; /* Full height */
+          width: 250px;  /* Width of the sidebar */
+          position: fixed; /* Fixed position */
+          left: 0;
+          top: 0;
+          background-color: #1900ff4d; /* Dark background */
+          color: white;
+          padding-top: 20px;
+          box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+     }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px 15px;
+    }
+
+    .sidebar-label {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(44, 244, 41, 0); /* Semi-transparent background */
+      z-index: -1; /* Place behind the option */
+      display: none; /* Initially hidden */
+      color: rgb(0, 88, 240);
+      text-align: center;
+      line-height: 40px; /* Center text vertically */
+      font-weight: bold;
+    }
+    
+        .sidebar a {
+          padding: 10px 15px;
+          text-decoration: none;
+          color: rgb(18, 186, 232);
+          display: block;
+        }
+    
+        .sidebar a:hover {
+          background-color: #35009290; /* Highlight color on hover */
+        }
+    
+        .content {
+          margin-left: 250px; /* Space for the sidebar */
+          padding: 20px;
+        }
+      </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-item">
+          <span class="sidebar-label" id="label-home" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Prices of all your all dream AutoMobiles</span>
+          <a href="#" onclick="showLabel('label-home')" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Prices</a>
+        </div>
+        <div class="sidebar-item">
+          <span class="sidebar-label" id="label-services" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Videos of your all dream AutoMobiles</span>
+          <a href="#" onclick="showLabel('label-services')" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Videos</a>
+        </div>
+        <div class="sidebar-item">
+          <span class="sidebar-label" id="label-about" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Specifications of your all dream AutoMobiles</span>
+          <a href="#" onclick="showLabel('label-about')" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Specification</a>
+        </div>
+        <div class="sidebar-item">
+          <span class="sidebar-label" id="label-contact" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Special things for your all dream AutoMobiles</span>
+          <a href="#" onclick="showLabel('label-contact')" style="text-decoration: none; font-family: 'Georgia', serif; font-size: 25px;">Special things</a>
+        </div>
+      </div>
+    
+      <script>
+        function showLabel(labelId) {
+          // Hide all labels first
+          document.querySelectorAll('.sidebar-label').forEach(label => {
+            label.style.display = 'none';
+          });
+          // Show the clicked label
+          const label = document.getElementById(labelId);
+          label.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

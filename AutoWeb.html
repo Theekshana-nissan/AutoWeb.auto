@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoWeb.auto</title>
+    <style>
+         body {
+            margin: 0;
+            font-family:Georgia, sans-serif;
+            height: 100vh; /* Full viewport height */
+            background: url('AutoWeb.jpg') no-repeat center center fixed; /* Background image */
+            background-size: cover;
+         }
+        .center-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .center-content h1 {
+            color: white;
+            font-size: 40px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        .center-content button {
+            background-color: #ff4757;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .center-content button:hover {
+            background-color: #e84118;
+        }
+        .option-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+            padding: 0 20px;
+            background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+            background-size: 400% 400%;
+            animation: rgb-flow 5s infinite;
+            position: fixed;
+            width: 100%;
+            top: 0;
+        }
+        .option-bar .logo-container img {
+            height: 40px;
+        }
+        .option-bar .links {
+            display: flex;
+        }
+        .option-bar .links a {
+            text-decoration: none;
+            color: white;
+            margin: 0 15px;
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+        }
+        .option-bar .like-container {
+            display: flex;
+            align-items: center;
+        }
+        .option-bar .like-btn {
+            background-color: #ff4757;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .option-bar .like-btn:hover {
+            background-color: #e84118;
+        }
+        .center-content h1 {
+        color: white;
+        font-size: 150px; /* Set text size to 150px */
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Adds shadow for contrast */
+        }
+        .option-bar .like-btn img {
+            height: 20px;
+            margin-right: 10px;
+        }
+        .option-bar .like-counter {
+            font-size: 18px;
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .like-button-container {
+            position: absolute;
+            top: 620px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between button and counter */
+        }
+
+        .like-button {
+            background-color: #020e5a;
+            color: rgb(63, 237, 60);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .like-button:hover {
+            background-color: #005f7a;
+        }
+
+        .counter {
+            font-size: 16px;
+            color: #3727ec;
+        }
+        @keyframes rgb-flow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Option Bar -->
+    <div class="option-bar">
+        <div class="logo-container">        
+            <img src="Logo.jpg" alt="Logo">
+        </div>
+        <div class="links">
+            <a href="AutoWeb.html" style=" text-decoration: none; font-family: 'Georgia', serif; font-size: 20px;">Home</a>
+            <a href="AutoWeb10.html" style=" text-decoration: none; font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size: 20px; color: rgb(180, 0, 197);">AutoWeb Bot</a>
+            <a href="AutoWeb5.html" style=" text-decoration: none; font-family: 'Georgia', serif; font-size: 20px;">Options</a>
+            <a href="AutoWeb6.html"style=" text-decoration: none; font-family: 'Georgia', serif; font-size: 20px;">Brands</a>
+            <a href="AutoWeb7.html"style=" text-decoration: none; font-family: 'Georgia', serif; font-size: 20px;">miniGuide</a>
+            <a href="AutoWeb8.html"style=" text-decoration: none; font-family: 'Georgia', serif; font-size: 20px;">More Info</a>
+        </div>
+    </div>
+    <!-- Center Content -->
+    <div class="center-content">
+        <h1>AutoWeb</h1>
+        <button onclick="navigateToNextPage()" id="navigateButton" style="position: absolute; top: 80%; left: 50%; transform: translate(-50%, -50%); padding: 15px 50px; font-size: 20px; cursor: pointer; border-radius: 40px; background-color: rgba(0, 0, 0, 0.452); color: rgb(16, 254, 56); font-family: 'Georgia', serif;">Enter Your Dream</button>
+    </div>
+    </div>
+    <div class="like-button-container">
+        <button class="like-button" id="likeButton">
+          <span class="like-icon">👍</span> Like
+        </button>
+        <span id="likeCount">0</span>
+      </div>
+    <script>
+    function navigateToNextPage() {
+    // Navigate to the next page
+    window.location.href = "AutoWeb1.html"; // Replace "nextpage.html" with your target page
+    }
+    </script>
+    <script>
+        // Retrieve likes from localStorage or initialize with 0
+        let likes = parseInt(localStorage.getItem('likes') || '0');
+        let liked = localStorage.getItem('liked') === 'true';
+      
+        const likeCount = document.getElementById('likeCount');
+        const likeButton = document.getElementById('likeButton');
+      
+        // Update the UI with saved like count
+        likeCount.textContent = likes;
+      
+        // Disable button if already liked
+        if (liked) {
+          likeButton.disabled = true;
+          likeButton.style.opacity = 0.5;
+          likeButton.style.cursor = 'not-allowed';
+        }
+      
+        // Event listener for like button
+        likeButton.addEventListener('click', () => {
+          if (!liked) {
+            likes++;
+            liked = true;
+            localStorage.setItem('likes', likes.toString());
+            localStorage.setItem('liked', 'true');
+            likeCount.textContent = likes;
+            
+      // Disable button after liking
+      likeButton.disabled = true;
+      likeButton.style.opacity = 0.5;
+      likeButton.style.cursor = 'not-allowed';
+      }
+    });
+    </script>
+</body>
+</html>
